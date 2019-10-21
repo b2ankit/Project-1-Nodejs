@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 
 bodyparser = require("body-parser");
 
-mongoose.connect('mongodb://localhost:27017/login',{useNewUrlParser:true})
+mongoose.connect('mongodb://localhost:27017/student',{useNewUrlParser:true})
 
 
 var conn = mongoose.Connection;

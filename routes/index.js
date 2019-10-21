@@ -81,7 +81,8 @@ router.post('/signup',function(req,res,next){
   })
   signupDetails.save(function(err,res1){
     if(err) throw err;
-    res.render('login', { title: 'student Records',msg:''});
+    var msg = 'Sign Up Done Plzz login'
+    res.render('login', { title: 'student Records',msg:msg});
   })
 })
 
