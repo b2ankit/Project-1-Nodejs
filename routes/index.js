@@ -28,7 +28,7 @@ router.get('/show', function(req, res, next) {
   //execute object student to fetch data
   student.exec(function(err,data){
       if(err) throw err;   //throw err if occur
-        res.render('show', { title: 'Student Records',records:data}); //render data for ejs page
+        res.render('show', { title: 'Student Records',records:data,showmsg:''}); //render data for ejs page
       
   });
   
@@ -91,6 +91,98 @@ router.get('/insert',function(req,res,next){
 
   res.render('insert',{title:'Student Records'})
 })
+
+
+
+router.post('/insert',function(req,res,next){
+  var studentDetails = new studentModel({
+    name: req.body.name,           //take value from ejs view from
+    email:req.body.email,
+    class:req.body.class,
+    gender:req.body.gender,
+    contact:req.body.contact, 
+
+  });
+
+    studentDetails.save(function(err,res1){
+      if(err) throw err;
+      student.exec(function(err,data){
+        res.render('show',{title:'Student Records',records:data,showmsg:'Record inserted Sucessfully'});
+      })
+      
+    })
+
+
+})
+
+
+//router for search
+router.post('/search',function(req,res,next){
+  var searchname = req.body.name;
+  console.log(searchname);
+  var filterstudent = studentModel.find({name:searchname});
+  filterstudent.exec(function(err,data){
+    if(err) throw err;
+    res.render('show', { title: 'Student Records',records:data,showmsg:''});
+  })
+})
+
+
+//route for delete
+router.get('/delete/:id',function(req,res,next){
+  var id = req.params.id;
+  var del=studentModel.findByIdAndDelete(id);
+  del.exec(function(err,data){
+    if(err) throw err;
+    student.exec(function(err,data){
+      if(err) throw err;
+      res.render('show', { title: 'Student Records',records:data,showmsg:''});
+    });
+  })
+
+});
+
+
+
+
+//route to edit .js page
+router.get('/edit/:id', function(req, res, next) {
+
+  var id = req.params.id;
+  var edit = studentModel.findById(id);
+
+//execute object student to fetch data
+    edit.exec(function(err,data){
+    if(err) throw err;   //throw err if occur
+      res.render('edit', { title: 'Edit Student Records',records:data}); //render data for ejs page
+    
+});
+
+});
+
+//route to update
+router.post('/update', function(req, res, next) {
+
+  
+  var update = studentModel.findByIdAndUpdate(req.body.id,{
+    name: req.body.name,           //take value from ejs view from
+    email:req.body.email,
+    class:req.body.class,
+    gender:req.body.gender,
+    contact:req.body.contact,
+  });
+
+//execute object student to fetch data
+    update.exec(function(err,data){
+    if(err) throw err;   //throw err if occur
+    student.exec(function(err,data){
+      if(err) throw err;   //throw err if occur
+        res.render('show', { title: 'Student Records',records:data, showmsg:'Data Updated Sucessfully'}); //render data for ejs page
+      
+  });
+});
+
+});
 
 
 
