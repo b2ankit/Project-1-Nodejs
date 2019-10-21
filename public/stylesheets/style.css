@@ -96,6 +96,7 @@ body {
   height: 70vh;
   margin-top: 5vh;
   background-image: linear-gradient(to right,#bdc3c7,#2c3e50);
+  /* background-color: whitesmoke; */
 
 }
 .index-main h3{
@@ -104,10 +105,12 @@ body {
   padding-top: 20px;
   font-size: 20px;
   color: whitesmoke;
+  /* color: black; */
 }
 .index-main p{
   text-align: center;
   font-size: 16px;
   color: white;
+  /* color: black; */
   margin-top: 150px;
 }
