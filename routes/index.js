@@ -1,6 +1,16 @@
 //Require express dependencies
 var express = require('express');
 
+
+//Require jsonwebtoken
+var jwt = require('jsonwebtoken');
+
+//Require node localStorage npm
+if (typeof localStorage === "undefined" || localStorage === null) {
+  var LocalStorage = require('node-localstorage').LocalStorage;
+  localStorage = new LocalStorage('./scratch');
+}
+
 //Require module of student from student.js file
 var studentModel = require('../modules/student');
 
@@ -13,6 +23,22 @@ var router = express.Router();
 //query for find result from collection
 var student=studentModel.find({});
 
+/* Defining Middleware .........*/
+
+function checkLoginUser(req,res,next){
+  var usertkn = localStorage.getItem('userToken');
+  try{
+    jwt.verify(usertkn,'LoginToken');
+  }
+  catch(err){
+    res.redirect('/');
+  }
+  next();
+}
+
+
+
+
 
 
 
@@ -23,7 +49,7 @@ router.get('/',function(req,res,next){
 })
 
 
-router.get('/show', function(req, res, next) {
+router.get('/show',checkLoginUser, function(req, res, next) {
 
   //execute object student to fetch data
   student.exec(function(err,data){
@@ -53,7 +79,18 @@ router.post('/login',function(req,res,next){
       { 
         if(data !==null){
         var user = data.name;
-        res.render('index',{title:'Student Records',username:user})
+        var id = data.id;
+
+        //start the token
+        var token = jwt.sign({userId:id},'LoginToken');
+
+        //save signin Token in local Storage
+        localStorage.setItem('userToken',token);
+
+        //Save login username in Local Storage
+        localStorage.setItem('loginUser',user);
+        // res.render('index',{title:'Student Records',username:user})
+        res.redirect('/');
       }
       else{
         var msg = 'Invalid Username/Password' 
@@ -87,14 +124,14 @@ router.post('/signup',function(req,res,next){
 })
 
 
-router.get('/insert',function(req,res,next){
+router.get('/insert',checkLoginUser,function(req,res,next){
 
   res.render('insert',{title:'Student Records'})
 })
 
 
 
-router.post('/insert',function(req,res,next){
+router.post('/insert',checkLoginUser,function(req,res,next){
   var studentDetails = new studentModel({
     name: req.body.name,           //take value from ejs view from
     email:req.body.email,
@@ -117,7 +154,7 @@ router.post('/insert',function(req,res,next){
 
 
 //router for search
-router.post('/search',function(req,res,next){
+router.post('/search',checkLoginUser,function(req,res,next){
   var searchname = req.body.name;
   console.log(searchname);
   var filterstudent = studentModel.find({name:searchname});
@@ -129,7 +166,7 @@ router.post('/search',function(req,res,next){
 
 
 //route for delete
-router.get('/delete/:id',function(req,res,next){
+router.get('/delete/:id',checkLoginUser,function(req,res,next){
   var id = req.params.id;
   var del=studentModel.findByIdAndDelete(id);
   del.exec(function(err,data){
@@ -146,7 +183,7 @@ router.get('/delete/:id',function(req,res,next){
 
 
 //route to edit .js page
-router.get('/edit/:id', function(req, res, next) {
+router.get('/edit/:id',checkLoginUser, function(req, res, next) {
 
   var id = req.params.id;
   var edit = studentModel.findById(id);
@@ -161,7 +198,7 @@ router.get('/edit/:id', function(req, res, next) {
 });
 
 //route to update
-router.post('/update', function(req, res, next) {
+router.post('/update',checkLoginUser, function(req, res, next) {
 
   
   var update = studentModel.findByIdAndUpdate(req.body.id,{
