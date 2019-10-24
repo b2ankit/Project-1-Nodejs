@@ -45,7 +45,13 @@ function checkLoginUser(req,res,next){
 // start routing.... 
 
 router.get('/',function(req,res,next){
-  res.render('index',{title:'Student Records', username:''});
+  var user = localStorage.getItem('loginUser');
+  if(user!=''){
+  res.render('index',{title:'Student Records', username:user});
+  }
+  else{
+    res.render('index',{title:'Student Records', username:''});
+  }
 })
 
 
@@ -54,7 +60,8 @@ router.get('/show',checkLoginUser, function(req, res, next) {
   //execute object student to fetch data
   student.exec(function(err,data){
       if(err) throw err;   //throw err if occur
-        res.render('show', { title: 'Student Records',records:data,showmsg:''}); //render data for ejs page
+      var user = localStorage.getItem('loginUser');
+        res.render('show', { title: 'Student Records',records:data,showmsg:'',username:user}); //render data for ejs page
       
   });
   
@@ -64,7 +71,7 @@ router.get('/show',checkLoginUser, function(req, res, next) {
 
 router.get('/login',function(req,res,next){
 
-  res.render('login',{title:'Student Records',msg:''})
+  res.render('login',{title:'Student Records',msg:'',username:''})
 })
 
 router.post('/login',function(req,res,next){
@@ -94,7 +101,7 @@ router.post('/login',function(req,res,next){
       }
       else{
         var msg = 'Invalid Username/Password' 
-        res.render('login',{title:'Student Records',msg:msg})
+        res.render('login',{title:'Student Records',msg:msg,username:user})
         
       }
     }
@@ -119,14 +126,14 @@ router.post('/signup',function(req,res,next){
   signupDetails.save(function(err,res1){
     if(err) throw err;
     var msg = 'Sign Up Done Plzz login'
-    res.render('login', { title: 'student Records',msg:msg});
+    res.render('login', { title: 'student Records',msg:msg,username:''});
   })
 })
 
 
 router.get('/insert',checkLoginUser,function(req,res,next){
-
-  res.render('insert',{title:'Student Records'})
+  var user = localStorage.getItem('loginUser');
+  res.render('insert',{title:'Student Records',username:user})
 })
 
 
@@ -144,7 +151,8 @@ router.post('/insert',checkLoginUser,function(req,res,next){
     studentDetails.save(function(err,res1){
       if(err) throw err;
       student.exec(function(err,data){
-        res.render('show',{title:'Student Records',records:data,showmsg:'Record inserted Sucessfully'});
+        var user = localStorage.getItem('loginUser');
+        res.render('show',{title:'Student Records',records:data,showmsg:'Record inserted Sucessfully',username:user});
       })
       
     })
@@ -160,7 +168,8 @@ router.post('/search',checkLoginUser,function(req,res,next){
   var filterstudent = studentModel.find({name:searchname});
   filterstudent.exec(function(err,data){
     if(err) throw err;
-    res.render('show', { title: 'Student Records',records:data,showmsg:''});
+    var user = localStorage.getItem('loginUser');
+    res.render('show', { title: 'Student Records',records:data,showmsg:'',username:user});
   })
 })
 
@@ -173,7 +182,8 @@ router.get('/delete/:id',checkLoginUser,function(req,res,next){
     if(err) throw err;
     student.exec(function(err,data){
       if(err) throw err;
-      res.render('show', { title: 'Student Records',records:data,showmsg:''});
+      var user = localStorage.getItem('loginUser');
+      res.render('show', { title: 'Student Records',records:data,showmsg:'',username:user});
     });
   })
 
@@ -191,7 +201,8 @@ router.get('/edit/:id',checkLoginUser, function(req, res, next) {
 //execute object student to fetch data
     edit.exec(function(err,data){
     if(err) throw err;   //throw err if occur
-      res.render('edit', { title: 'Edit Student Records',records:data}); //render data for ejs page
+    var user = localStorage.getItem('loginUser');
+      res.render('edit', { title: 'Edit Student Records',records:data,username:user}); //render data for ejs page
     
 });
 
@@ -214,11 +225,19 @@ router.post('/update',checkLoginUser, function(req, res, next) {
     if(err) throw err;   //throw err if occur
     student.exec(function(err,data){
       if(err) throw err;   //throw err if occur
-        res.render('show', { title: 'Student Records',records:data, showmsg:'Data Updated Sucessfully'}); //render data for ejs page
+      var user = localStorage.getItem('loginUser');
+        res.render('show', { title: 'Student Records',records:data, showmsg:'Data Updated Sucessfully',username:user}); //render data for ejs page
       
   });
 });
 
+});
+
+//Logout route
+router.get('/logout', function(req, res, next) {
+  localStorage.removeItem('userToken');
+  localStorage.removeItem('loginUser');
+  res.redirect('/');
 });
 
 
