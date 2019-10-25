@@ -58,8 +58,16 @@
       <div class="layer2"></div>
       <div class="content">
         <h1>Welcome to node js Project</h1>
-        <p>In this is madeup by using Node js Expressjs </p>
+        <p>Mini project on Node js and MongoDB. In which we design a signup/login after login we can insert student records into database.
+          we can also edit, upadte and delete the student records.
+        </p>
+        <%if(username==null){%>
         <a href="/login">Login</a>
+        <%}%>
+        <%if(username!=null){%>
+          <a href="#">Hello <%=username%></a>
+          <%}%>
+
       </div>
   </div>
   </div>
