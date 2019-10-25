@@ -32,7 +32,11 @@
                 </ul>
               </li>
               <%}%>
+              <%if(username==''){%>
+                
               <li><a href="/login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                
+                <%}%>
              
             <form class="navbar-form navbar-left" action="/search" method="post">
               <div class="form-group">

@@ -48,10 +48,13 @@ router.get('/',function(req,res,next){
   var user = localStorage.getItem('loginUser');
   if(user!=''){
   res.render('index',{title:'Student Records', username:user});
+  console.log("some on is loggin");
   }
-  else{
-    res.render('index',{title:'Student Records', username:''});
+  if(user==null){
+    res.render('index',{title:'Student Records', username:user});
+    console.log('no one is login')
   }
+  
 })
 
 
@@ -71,7 +74,8 @@ router.get('/show',checkLoginUser, function(req, res, next) {
 
 router.get('/login',function(req,res,next){
 
-  res.render('login',{title:'Student Records',msg:'',username:''})
+  var user = localStorage.getItem('loginUser');
+  res.render('login',{title:'Student Records',msg:'',username:'',username:user})
 })
 
 router.post('/login',function(req,res,next){
@@ -101,6 +105,7 @@ router.post('/login',function(req,res,next){
       }
       else{
         var msg = 'Invalid Username/Password' 
+        
         res.render('login',{title:'Student Records',msg:msg,username:user})
         
       }
@@ -112,8 +117,8 @@ router.post('/login',function(req,res,next){
 
 //route for signup page
 router.get('/signup',function(req,res,next){
-
-  res.render('signup',{title:'Student Records'})
+  var user = localStorage.getItem('loginUser');
+  res.render('signup',{title:'Student Records',username:user})
 })
 
 
@@ -126,7 +131,8 @@ router.post('/signup',function(req,res,next){
   signupDetails.save(function(err,res1){
     if(err) throw err;
     var msg = 'Sign Up Done Plzz login'
-    res.render('login', { title: 'student Records',msg:msg,username:''});
+    var user = localStorage.getItem('loginUser');
+    res.render('login', { title: 'student Records',msg:msg,username:user,});
   })
 })
 
