@@ -188,7 +188,24 @@ body {
     text-decoration: none;
     padding: 10px 20px;
     margin-top: 10px;
-    background: #52cf7c;
+    background: #5cb85c;
     color: #fff;
     border-radius: 5px;
+}
+
+#foot {
+  position: fixed;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color:rgb(46, 41, 41);
+  color: white;
+  text-align: center;
+}
+#foot li{
+  padding: 20px;
+}
+#foot p{
+  font-size: 15px;
 }
